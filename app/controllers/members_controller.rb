@@ -13,6 +13,8 @@ class MembersController < ApplicationController
 
   def create
     @member = Member.new(member_params)
+    # TODO: Use bitly instead of tinyurl, bitly requires additional setup
+    @member.short_url = ShortURL.shorten(member_params[:full_url])
 
     if @member.save
         redirect_to @member
