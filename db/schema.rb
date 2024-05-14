@@ -10,6 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 2024_05_14_211558) do
+
+  create_table "members", force: :cascade do |t|
+    t.string "name"
+    t.string "full_url"
+    t.string "short_url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["full_url"], name: "index_members_on_full_url"
+    t.index ["name"], name: "index_members_on_name"
+    t.index ["short_url"], name: "index_members_on_short_url"
+  end
 
 end

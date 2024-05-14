@@ -1,0 +1,26 @@
+/*
+  Place all the styles related to the matching controller here.
+  They will automatically be included in application.css.
+*/
+
+.form-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 10px;
+  padding: 10px;
+}
+
+.form-container label {
+  grid-column: 1;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.form-container input {
+  grid-column: 2;
+}
+
+.form-container .actions {
+  grid-column: span 2;
+  text-align: center;
+}

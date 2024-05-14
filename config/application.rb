@@ -18,5 +18,11 @@ module BackendChallenge
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Generate rspec unit tests rather than test_unit
+    config.generators do |g|
+      g.test_framework :rspec
+      g.test_unit false
+    end
   end
 end
