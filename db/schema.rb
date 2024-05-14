@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_14_211558) do
+ActiveRecord::Schema.define(version: 2024_05_14_230656) do
+
+  create_table "headers", force: :cascade do |t|
+    t.integer "member_id", null: false
+    t.string "tag"
+    t.text "content"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["content"], name: "index_headers_on_content"
+    t.index ["member_id"], name: "index_headers_on_member_id"
+  end
 
   create_table "members", force: :cascade do |t|
     t.string "name"
@@ -23,4 +33,5 @@ ActiveRecord::Schema.define(version: 2024_05_14_211558) do
     t.index ["short_url"], name: "index_members_on_short_url"
   end
 
+  add_foreign_key "headers", "members"
 end
