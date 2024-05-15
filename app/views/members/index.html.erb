@@ -13,8 +13,8 @@
   <tbody>
     <% @members.each do |member| %>
       <tr>
-        <td><%= member.name %></td>
-        <td><%= member.full_url %></td>
+        <td><%= member.first_name + ' ' + member.last_name %></td>
+        <td><%= member.url %></td>
         <td><%= link_to 'Show', member %></td>
       </tr>
     <% end %>

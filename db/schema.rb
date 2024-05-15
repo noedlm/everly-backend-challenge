@@ -23,14 +23,13 @@ ActiveRecord::Schema.define(version: 2024_05_14_230656) do
   end
 
   create_table "members", force: :cascade do |t|
-    t.string "name"
-    t.string "full_url"
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "url", null: false
     t.string "short_url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["full_url"], name: "index_members_on_full_url"
-    t.index ["name"], name: "index_members_on_name"
-    t.index ["short_url"], name: "index_members_on_short_url"
+    t.index ["url"], name: "index_members_on_url"
   end
 
   add_foreign_key "headers", "members"
