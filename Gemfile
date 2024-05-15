@@ -16,6 +16,9 @@ gem 'jbuilder', '~> 2.7'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+# Use for parsing header tags from given websites
+gem 'nokogiri', '~> 1.16', '>= 1.16.5'
+# Use to shorten URLs with the preferred valid service, tinyurl is the default service
 gem 'shorturl', '~> 1.0'
 
 # Use Active Storage variant
