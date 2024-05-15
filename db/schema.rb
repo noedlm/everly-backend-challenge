@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 2024_05_15_013550) do
     t.index ["url"], name: "index_members_on_url"
   end
 
-  add_foreign_key "friendships", "friends"
   add_foreign_key "friendships", "members"
+  add_foreign_key "friendships", "members", column: "friend_id"
   add_foreign_key "headers", "members"
 end

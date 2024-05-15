@@ -2,6 +2,8 @@ class Member < ApplicationRecord
   require 'open-uri'
 
   has_many :headers
+  has_many :friendships
+  has_many :friends, through :friendships, source: :friend
 
   validates :first_name, :last_name, :url, presence: true
 
