@@ -15,6 +15,16 @@
   <%= @member.short_url %>
 </p>
 
-<%= link_to 'Add Friendship', new_friendship_path %>
+<%= form_with url: search_member_path(@member), method: :get, local: true do |form| %>
+  <%= form.label :query, 'Search Topic for an Expert:' %>
+  <%= form.text_field :query %>
+  <%= form.submit 'Search' %>
+<% end %>
 
-<%= link_to 'Back to members list', members_path %>
+<p>
+  <%= link_to 'Add Friendship', new_friendship_path %>
+</p>
+
+<p>
+  <%= link_to 'Back to members list', members_path %>
+</p>
