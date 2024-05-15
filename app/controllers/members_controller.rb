@@ -1,6 +1,8 @@
 class MembersController < ApplicationController
   def index
-    @members = Member.all
+    @members = Member.select('members.*, COUNT(friendships.id) AS friends_count')
+                     .left_outer_joins(:friendships)
+                     .group('members.id')
 
     respond_to do |format|
       format.html
