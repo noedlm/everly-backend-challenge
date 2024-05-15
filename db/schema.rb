@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_14_230656) do
+ActiveRecord::Schema.define(version: 2024_05_15_013550) do
+
+  create_table "friendships", force: :cascade do |t|
+    t.integer "member_id", null: false
+    t.integer "friend_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["friend_id"], name: "index_friendships_on_friend_id"
+    t.index ["member_id", "friend_id"], name: "index_friendships_on_member_id_and_friend_id", unique: true
+    t.index ["member_id"], name: "index_friendships_on_member_id"
+  end
 
   create_table "headers", force: :cascade do |t|
     t.integer "member_id", null: false
@@ -32,5 +42,7 @@ ActiveRecord::Schema.define(version: 2024_05_14_230656) do
     t.index ["url"], name: "index_members_on_url"
   end
 
+  add_foreign_key "friendships", "friends"
+  add_foreign_key "friendships", "members"
   add_foreign_key "headers", "members"
 end
