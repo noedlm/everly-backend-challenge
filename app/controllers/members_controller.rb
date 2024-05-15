@@ -12,6 +12,8 @@ class MembersController < ApplicationController
 
   def show
     @member = Member.find_by(id: params[:id])
+    @headers = @member.headers
+    @friends = @member.friends
 
     flash[:error] = @member.blank? ? 'Member not found' : nil
 

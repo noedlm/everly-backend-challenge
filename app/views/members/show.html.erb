@@ -11,7 +11,7 @@
   </p>
 
   <p>
-    <strong>URL:</strong>
+    <strong>Website URL:</strong>
     <%= @member.url %>
   </p>
 
@@ -19,6 +19,39 @@
     <strong>Short URL:</strong>
     <%= @member.short_url %>
   </p>
+
+  <% if @headers %>
+    <h2>Website Headers</h2>
+    <table style="width: 80%">
+      <thead>
+        <tr>
+          <th style="width: 20%; text-align: left;">Header Tag</th>
+          <th style="text-align: left;">Header Content</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @headers.each do |header| %>
+          <tr>
+            <td><%= header.tag %></td>
+            <td><%= header.content %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+  <br>
+
+  <% if @friends %>
+    <h2>Friends</h2>
+      <ul>
+        <% @friends.each do |friend| %>
+          <li><%= link_to friend.first_name + ' ' + friend.last_name, member_path(friend) %></li>
+        <% end %>
+      </ul>
+  <% end %>
+
+  <br>
 
   <%= form_with url: search_member_path(@member), method: :get, local: true do |form| %>
     <%= form.label :query, 'Search Topic for an Expert:' %>
