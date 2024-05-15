@@ -12,14 +12,20 @@ class MembersController < ApplicationController
 
   def show
     @member = Member.find_by(id: params[:id])
-    @headers = @member.headers
-    @friends = @member.friends
+    @headers = @member&.headers
+    @friends = @member&.friends
 
     flash[:error] = @member.blank? ? 'Member not found' : nil
 
     respond_to do |format|
       format.html
-      format.json { render json: @member }
+      format.json do
+        if flash[:error].present?
+          render json: { error: flash[:error] }, status: :bad_request
+        else
+          render json: @member, status: :ok
+        end
+      end
     end
   end
 
