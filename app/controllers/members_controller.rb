@@ -11,7 +11,9 @@ class MembersController < ApplicationController
   end
 
   def show
-    @member = Member.find(params[:id])
+    @member = Member.find_by(id: params[:id])
+
+    flash[:error] = @member.blank? ? 'Member not found' : nil
 
     respond_to do |format|
       format.html
@@ -43,43 +45,47 @@ class MembersController < ApplicationController
   end
 
   def search
+    # TODO: Add better error handling and user feedback
     # clear the flash so the correct response is displayed
     flash[:error] = nil
-    # TODO: Add better error handling and user feedback
-    flash[:error] = 'Query not found' and (return render :search) unless params[:query].present?
 
+    @member = Member.find_by(id: params[:id])
+    flash[:error] = 'Member not found' and (return render :search) if @member.blank?
+    
+    flash[:error] = 'Query not found' and (return render :search) if params[:query].blank?
     @query = params[:query]
-    @member = Member.find(params[:id])
-
-    flash[:error] = 'Member not found' and return unless @member.present?
 
     friend_ids = @member.friendships.pluck(:friend_id)
     @expert = Member.joins(:headers).where('headers.content LIKE ?', "%#{@query}%").where.not(id: friend_ids + [@member.id]).first
+    flash[:error] = 'No expert found' and (return render :search) if @expert.blank?
 
-    flash[:error] = 'No expert found' and return unless @expert.present?
+    @friend_path = find_friend_path(@member, @expert)
+    flash[:error] = 'No friend path found' if @friend_path.blank?
+  end
 
-    # TODO: Move this into a concern, although so far it's only used in one place, at least for the scope in a different method
+  private
+
+  # TODO: Move this into a concern if it ends up being reused in other methods
+  def find_friend_path(member, expert)
     visited = {}
-    queue = [[@member, [@member]]]
+    queue = [[member, [member]]]
 
     # BFS to find a connection between a member doing the search and an expert
     while queue.present?
-      current_member, @friend_path = queue.shift
-      return @friend_path if current_member == @expert
+      current_member, friend_path = queue.shift
+      return friend_path if current_member == expert
 
       current_member.friends.each do |friend|
         unless visited[friend.id]
           visited[friend.id] = true
-          queue << [friend, @friend_path + [friend]]
+          queue << [friend, friend_path + [friend]]
         end
       end
     end
 
     # Return an empty path if no connection exists between member and expert
-    @friend_path = []
+    []
   end
-
-  private
 
   def member_params
     params.fetch(:member, {}).permit(:first_name, :last_name, :url)

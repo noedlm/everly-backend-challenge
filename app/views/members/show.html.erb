@@ -1,29 +1,35 @@
 <h1>Member Details</h1>
 
-<p>
-  <strong>Name:</strong>
-  <%= @member.first_name + ' ' + @member.last_name %>
-</p>
+<% if flash[:error] %>
+  <div class="alert alert-danger">
+    <%= flash[:error] %>
+  </div>
+<% else %>
+  <p>
+    <strong>Name:</strong>
+    <%= @member.first_name + ' ' + @member.last_name %>
+  </p>
 
-<p>
-  <strong>URL:</strong>
-  <%= @member.url %>
-</p>
+  <p>
+    <strong>URL:</strong>
+    <%= @member.url %>
+  </p>
 
-<p>
-  <strong>Short URL:</strong>
-  <%= @member.short_url %>
-</p>
+  <p>
+    <strong>Short URL:</strong>
+    <%= @member.short_url %>
+  </p>
 
-<%= form_with url: search_member_path(@member), method: :get, local: true do |form| %>
-  <%= form.label :query, 'Search Topic for an Expert:' %>
-  <%= form.text_field :query %>
-  <%= form.submit 'Search' %>
+  <%= form_with url: search_member_path(@member), method: :get, local: true do |form| %>
+    <%= form.label :query, 'Search Topic for an Expert:' %>
+    <%= form.text_field :query %>
+    <%= form.submit 'Search' %>
+  <% end %>
+
+  <p>
+    <%= link_to 'Add Friendship', new_friendship_path %>
+  </p>
 <% end %>
-
-<p>
-  <%= link_to 'Add Friendship', new_friendship_path %>
-</p>
 
 <p>
   <%= link_to 'Back to members list', members_path %>
