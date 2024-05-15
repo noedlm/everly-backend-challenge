@@ -1,0 +1,27 @@
+<h1><%= @query.present? ? "Search Results for: #{@query}" : 'Enter search query' %></h1>
+
+<% if flash[:error] %>
+  <div class="alert alert-danger">
+    <%= flash[:error] %>
+  </div>
+<% else %>
+  <p>
+    First friend path of introduction between <%= @member.first_name %> and the expert <%= @expert.first_name %>
+  </p>
+
+  <p>
+    <% @friend_path.each do |friend| %>
+      <%= link_to(friend.first_name + ' ' + friend.last_name, member_path(friend)) %> <%= ' > ' unless @expert.id == friend.id %>
+    <% end %>
+  </p>
+<% end %>
+
+<% if @member.present? %>
+  <p>
+    <%= link_to 'back to Member page', member_path(@member) %>
+  </p>
+<% end %>
+
+<p>
+  <%= link_to 'Back to members list', members_path %>
+</p>
