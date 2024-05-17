@@ -4,6 +4,11 @@ describe 'Members', type: :request do
   let(:body) { JSON.parse(response.body) }
   let(:headers) { { "Accept" => "application/json", 'Content-Type' => 'application/json' } }
 
+  let(:member1) { Member.create!(first_name: 'Test', last_name: 'One', url: 'https://example.com') }
+  let(:member2) { Member.create!(first_name: 'Test', last_name: 'Two', url: 'https://google.com') }
+  let(:member3) { Member.create!(first_name: 'Test', last_name: 'Three', url: 'https://everlyhealth.com') }
+  let(:member4) { Member.create!(first_name: 'Test', last_name: 'Four', url: 'https://some-url.com') }
+
   describe 'creating a member' do
     subject { post '/members', params: params.to_json, headers: headers }
 
@@ -49,13 +54,8 @@ describe 'Members', type: :request do
   end
 
   describe 'viewing a member' do
-    before do
-      Member.create!(first_name: 'Test', last_name: 'One', url: 'https://example.com')
-      Member.create!(first_name: 'Test', last_name: 'Two', url: 'https://google.com')
-    end
-
     context 'when member exists' do
-      subject { get "/members/#{Member.first.id}", headers: headers }
+      subject { get "/members/#{member1.id}", headers: headers }
 
       it 'returns the correct status code' do
         subject
@@ -69,6 +69,76 @@ describe 'Members', type: :request do
       it 'returns the correct status code' do
         subject
         expect(response).not_to have_http_status(:success)
+      end
+    end
+  end
+
+  describe 'searching for an expert' do
+    let(:member3_content) { member3.headers.first.content.split(' | ').first }
+    let(:member4_content) { member4.headers.first.content.split(' | ').first }
+
+    before do
+      Friendship.create!(member_id: member1.id, friend_id: member2.id)
+      Friendship.create!(member_id: member2.id, friend_id: member3.id)
+    end
+
+    context 'when member exists and query is present' do
+      subject { get "/members/#{member1.id}/search", params: { query: member3_content }, headers: headers }
+
+      it 'returns the friend path to expert' do
+        subject
+
+        expect(response).to have_http_status(:success)
+        expect(body).to be_an_instance_of(Array)
+        expect(body).to eq([member1, member2, member3].map(&:as_json))
+      end
+    end
+
+    context 'when member is not present' do
+      subject { get "/members/0/search", params: { query: member3_content }, headers: headers }
+
+      it 'returns appropriate error response' do
+        subject
+
+        expect(response).not_to have_http_status(:success)
+        expect(body).to include('error')
+        expect(body['error']).to eq('Member not found')
+      end
+    end
+
+    context 'when query is not present' do
+      subject { get "/members/#{member1.id}/search", params: { query: '' }, headers: headers }
+
+      it 'returns appropriate error response' do
+        subject
+
+        expect(response).not_to have_http_status(:success)
+        expect(body).to include('error')
+        expect(body['error']).to eq('Query not found')
+      end
+    end
+
+    context 'when no expert is found' do
+      subject { get "/members/#{member1.id}/search", params: { query: 'asdf' }, headers: headers }
+
+      it 'returns appropriate error response' do
+        subject
+
+        expect(response).not_to have_http_status(:success)
+        expect(body).to include('error')
+        expect(body['error']).to eq('No expert found')
+      end
+    end
+
+    context 'when no friend path is found' do
+      subject { get "/members/#{member1.id}/search", params: { query: member4_content }, headers: headers }
+
+      it 'returns appropriate error response' do
+        subject
+
+        expect(response).not_to have_http_status(:success)
+        expect(body).to include('error')
+        expect(body['error']).to eq('No friend path found')
       end
     end
   end

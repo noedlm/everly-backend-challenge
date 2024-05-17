@@ -10,7 +10,15 @@ class Member < ApplicationRecord
   after_create :store_headers
 
   def store_headers
-    document = Nokogiri::HTML(URI.open(url))
+    begin
+      document = Nokogiri::HTML(URI.open(url))
+    rescue Net::OpenTimeout
+      Rails.logger.error("Timeout error when trying to open #{url}")
+      return
+    rescue StandardError => e
+      Rails.logger.error("Error when trying to open #{url}: #{e.message}")
+      return
+    end
 
     Header::TAGS.each do |tag|
       header_content = document.css(tag).map(&:text).join(' | ')
